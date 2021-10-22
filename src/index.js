@@ -1,7 +1,13 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Image, Button } from 'react-native';
+import { Text, View, StyleSheet, Image, Button, TouchableOpacity, TextInput } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+//var RNFS = require('react-native-fs');
+//import RNFS from 'react-native-fs';
+
+const user = ({
+  name: "Drake"
+});
 
 const styles = StyleSheet.create({
     icon: {
@@ -24,59 +30,139 @@ const styles = StyleSheet.create({
 
     },
     buttonStart: {
-      marginTop: 30,
-      top: 20
+      backgroundColor: '#5B3FFF',
+      paddingTop: 5,
+      paddingBottom: 5, 
+      paddingLeft: 70, 
+      paddingRight: 70,
+      borderRadius: 3,
+      marginTop: 20
+    },
+    textButtonStart: {
+      color: '#fff',
+      fontSize: 20,
+    },
+    tableData: {
+      flexDirection: 'row',
+      marginTop: 30
+    },
+    itemData: {
+      marginHorizontal: 20,
+      textAlign: 'center',
+      alignItems: 'center'
+    },
+    textItemData: {
+      fontSize: 20,
+      color: 'gray'
+    },
+    subTextItemData: {
+      fontSize: 20,
+      color: '#9E2D8C'
     }
 });
 
-function Home() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-        <Image style={styles.centerImage} source={ require('./assets/person.png') }/>
-        <Text style={styles.mainText}>
-            Hey, guy!
-        </Text>
 
-        <Text style={styles.subText}>
-            Let's start your treatment? :)
-        </Text>
+const Home = (props) => {
+// function Home({navigation}){
+      return (
+      <View style={{ flex: 1, alignItems: 'center' }}>
+          <Image style={styles.centerImage} source={ require('./assets/person.png') }/>
+          <Text style={styles.mainText}>
+              Hey, { props.name }!
+          </Text>
 
-        <Button 
-          style={styles.buttonStart}
-          onPress={() => {
-                alert('You tapped the button!');
-          }}
+          <Text style={styles.subText}>
+              Let's start your treatment? :) 
+          </Text>
 
-          title="Start" />
-        </View>
-  );
-}
 
-function Profile() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile!</Text>
-    </View>
-  );
+            {/*<TouchableOpacity
+              style={styles.buttonStart}
+              onPress={() =>{
+                navigation.navigate(Exercices);
+              }}
+            >
+              <Text style={styles.textButtonStart}>Start</Text>
+            </TouchableOpacity>*/}
+      </View>
+    );
 }
 
 function Exercices() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Notifications!</Text>
+    <View style={{ flex: 1, alignItems: 'center' }}>
+        <Image style={styles.centerImage} source={ require('./assets/exercices/hand.png') }/>
+        <Text style={styles.mainText}>
+            Close and open hands
+        </Text>
+
+
+          <TouchableOpacity
+            style={styles.buttonStart}
+            onPress={() =>{
+              navigation.navigate(Exercices);
+            }}
+          >
+            <Text style={styles.textButtonStart}>Done</Text>
+          </TouchableOpacity>
+
+          <View style={styles.tableData}>
+              { /* Series */}
+              <View style={styles.itemData}>
+                  <Text style={styles.textItemData}>Series</Text>
+                  <Text style={styles.subTextItemData}>3x</Text>
+              </View>
+
+              { /* Repetitions */}
+              <View style={styles.itemData}>
+                  <Text style={styles.textItemData}>Repetitions</Text>
+                  <Text style={styles.subTextItemData}>10</Text>
+              </View>
+
+              { /* Rest */}
+              <View style={styles.itemData}>
+                  <Text style={styles.textItemData}>Rest</Text>
+                  <Text style={styles.subTextItemData}>20 seg</Text>
+              </View>
+          </View>
     </View>
   );
 }
 
-function Icon() {
-    return (
-        <Text>T</Text>
-    );
+// function Profile() {
+const Profile = (props) => {
+
+  return (
+    <View style={{ flex: 1, alignItems: 'center' }}>
+        <Text style={styles.mainText}>
+            Choose your name 
+        </Text>
+
+        <TextInput 
+          style={styles.changeUsernameField}
+          placeholder="Username"
+          onChangeText={text => props.setName(text)}
+        />
+
+
+          {/*<TouchableOpacity
+            style={styles.buttonStart}
+              onPress={() =>{
+                props.navigation.navigate(Exercices);
+              }
+            }
+
+          >
+            <Text style={styles.textButtonStart}>Save</Text>
+          </TouchableOpacity>*/}
+    </View>
+  );
 }
 
 const Tab = createBottomTabNavigator();
 
-function Menu(){
+// function Menu({ teste }){
+const Menu = (props) => {
   return (
         <Tab.Navigator
         initialRouteName="Home"
@@ -86,7 +172,8 @@ function Menu(){
         >
             <Tab.Screen
                 name="Home"
-                component={Home}
+                //component={Home}
+                children={() => <Home name={props.nameState} />}
                 options={{
                 tabBarLabel: 'Home',
                 tabBarIcon: () => (
@@ -104,11 +191,13 @@ function Menu(){
                    <Image style={styles.icon} source={ require('./assets/icons/faixas-de-exercicio.png') } />
                 ),
                 }}
+               
             />
 
             <Tab.Screen
                 name="Profile"
-                component={Profile}
+                // component={Profile}
+                children={() => <Profile setName={props.setNameState} />}
                 options={{
                 tabBarLabel: 'Profile',
                 tabBarIcon: () => (
@@ -122,9 +211,15 @@ function Menu(){
 }
 
 export default function App() {
+
+  const [name, setName] = React.useState('');
+
+  
+
   return (
+    
     <NavigationContainer>
-      <Menu />
+      <Menu setNameState={setName} nameState={name}/>
     </NavigationContainer>
   );
 }
